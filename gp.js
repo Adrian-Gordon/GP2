@@ -35,7 +35,7 @@ nconf.defaults({
      	"max":10.0,
      	
      },
-     "variables":['speed1','distance1','distance2','distancediff','weight1','weight2','weightdiff','going1','going2','goingdiff'],
+     "variables":['speed1','distance1','distance2','distancediff','weight1','weight2','weightdiff','going1','going2','goingdiff','type1','type2','typediff'],
      'functionSet':['+','-','*','/','^','if<='],
      'proportions':{			//proportions in which nodes are created: 50/50 functions vs terminals (grow)
      	'functions': 0.5,
@@ -48,7 +48,7 @@ nconf.defaults({
      'crossoverrate':0.9,
      'pointmutationrate':0.05,
      'pointmutationratefunctions':0.9,
-     'datafileurl':'/Users/adriangordon/Development/GP/GP/observations.json',
+     'datafileurl':'/Users/adriangordon/Development/GP/GP/jumpsobservations.json',
      'nelite':20,
      'ngenerations':100
 
@@ -665,7 +665,7 @@ function generatePopulation(size){
 			stats:{
 				cumulativeError:0,
 				nobservations:0,
-				fitness:0
+				fitness:Number.MAX_VALUE
 			}
 		}
 		//logger.info(strategy + " " + depth + ": " + obj.rule.toStrArr());
@@ -678,31 +678,75 @@ function generatePopulation(size){
 
 }
 
-function evaluatePopulation(){
-	for(var i=0;i<population.length;i++){
-		var populationMember=population[i];
-		if(typeof populationMember == 'undefined'){
-			logger.info("i: " + i + " " + JSON.stringify(population));
-		}
-		evaluatePopulationMember(populationMember);
+function evaluatePopulation(all){
+	//console.log("\n");
+	var start;
+	if(all){
+		start=0;
+	}
+	else {
+		start=nconf.get('nelite');
+	}
+	for(var i=start;i<population.length;i++){
+	
+	//for(var i=0;i<1;i++){
+			//console.log(i + " ");
+			var populationMember=population[i];
+			if(typeof populationMember == 'undefined'){
+				logger.info("i: " + i + " " + JSON.stringify(population));
+			}
+			evaluatePopulationMember(populationMember);
 	}
 	//logger.info(JSON.stringify(population));
+	
 
 }
 
 function evaluatePopulationMember(pm){
 	var rule=pm.rule;
+	if(typeof rule.stats == 'undefined'){
+		rule.stats={
+			cumulativeError:0,
+			nobservations:0,
+			fitness:Number.MAX_VALUE
+		}
+	}
+	else{
+		rule.stats.cumulativeError=0;
+		rule.stats.nobservations=0;
+		rule.stats.fitness=Number.MAX_VALUE
+	}
 
 	for(var i=0;i<observations.length;i++){
+	//for(var i=0;i<10;i++){
 		var obs=observations[i];
 
-		var err=rule.getAbsError(obs);
-		pm.stats.cumulativeError=pm.stats.cumulativeError + err;
-		pm.stats.nobservations=pm.stats.nobservations+1;
+		if(obs.speed1!== null && obs.speed2 !== null){
+
+			var err=rule.getAbsError(obs);
+			//logger.info("err: " + err);
+			if(err == Infinity){
+				//logger.info("Infinity obs: " + JSON.stringify(obs));
+				//logger.info("Rule: " + rule.toStrArr());
+				//break;
+			}
+			pm.stats.cumulativeError=pm.stats.cumulativeError + err;
+			pm.stats.nobservations=pm.stats.nobservations+1;
+			
+			//logger.info("stats: " + JSON.stringify(pm.stats));
+		}
 	}
 
 	pm.stats.fitness=pm.stats.cumulativeError/pm.stats.nobservations;
-	if(pm.stats.fitness==null)pm.stats.fitness=Number.MAX_VALUE;
+	//logger.info("Fitness: " + pm.stats.fitness);
+	if(pm.stats.fitness==Infinity){
+		pm.stats.fitness=Number.MAX_VALUE;
+	}
+	if(pm.stats.fitness==null){
+		//logger.info("FITNESS NULL");
+		pm.stats.fitness=Number.MAX_VALUE;
+	}
+	//logger.info("stats: " + JSON.stringify(pm.stats));
 
 }
 
@@ -742,6 +786,8 @@ function tournament(){
 
 function evolve(){
 	for(var generation=0;generation < nconf.get('ngenerations');generation++){
+
+	//for(var generation=0;generation < 1;generation++){
 		logger.info("GENERATION: " + generation);
 		//logger.info(population[0].rule.toStrArr() + " " + JSON.stringify(population[0].stats));
 		var newPopulation = new Array(nconf.get('populationsize'));
@@ -775,7 +821,7 @@ function evolve(){
 					stats:{
 						cumulativeError:0,
 						nobservations:0,
-						fitness:0
+						fitness:Number.MAX_VALUE
 					}
 				}
 
@@ -814,7 +860,7 @@ function evolve(){
 					stats:{
 						cumulativeError:0,
 						nobservations:0,
-						fitness:0
+						fitness:Number.MAX_VALUE
 					}
 				}
 
@@ -826,7 +872,7 @@ function evolve(){
 		//logger.info('done with the pop')
 
 		population=newPopulation;
-		evaluatePopulation();
+		evaluatePopulation(false);
 		sortPopulation();
 		logger.info(population[0].rule.toStrArr() + " " + JSON.stringify(population[0].stats));
 
@@ -885,9 +931,9 @@ observations=[obs1,obs2];
 */
 
 observations= JSON.parse(fs.readFileSync(nconf.get('datafileurl'), 'utf8'));
-
+logger.info("Observations: " + observations.length);
 generatePopulation(nconf.get('populationsize'));
-evaluatePopulation();
+evaluatePopulation(true);//evaluate all
 sortPopulation();
 
 evolve();
