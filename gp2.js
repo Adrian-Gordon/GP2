@@ -16,6 +16,11 @@ if(path=nconf.get('conf')){
  
 }
 
+var goingMappings={"Firm":-3,"Good To Firm":-2,"Standard":-1,"Good":-1,"Good To Soft":0,"Good To Yielding":-1,"Standard To Slow":0,"Yielding":1,"Yielding To Soft":1,"Soft":1,"Soft To Heavy":2,"Heavy":3}
+
+
+// "variables":['speed1','distance1','distance2','distancediff','weight1','weight2','weightdiff','going1','going2','goingdiff','type1','type2','typediff'],
+
 nconf.defaults({
 	 logging:{
         "fileandline":true,
@@ -30,12 +35,12 @@ nconf.defaults({
 
      },
      "constants":{
-     	"nconstants": 100,
+     	"nconstants": 1000,
      	"min":-10.0,
      	"max":10.0,
      	
      },
-     "variables":['speed1','distance1','distance2','distancediff','weight1','weight2','weightdiff','going1','going2','goingdiff','type1','type2','typediff'],
+     "variables":['speed1','distance1','distance2','distancediff',"going1","going2","goingdiff","weight1","weight2","weightdiff"],
      'functionSet':['+','-','*','/','^','if<='],
      'proportions':{			//proportions in which nodes are created: 50/50 functions vs terminals (grow)
      	'functions': 0.5,
@@ -51,11 +56,68 @@ nconf.defaults({
      'datafileurl':'/Users/adriangordon/Development/GP/GP/flatobservations.json',
      'nelite':20,
      'ngenerations':100,
-     'permutations':{
-     	'going':[-3,-2,-1,0,1,2,3],
-     	'distance': [1000,1500,2000,2500,3000,3500,4000,4500,500],
-     	'weight': [100,110,120,130,140,150,160,170,180,190,200]
+     "gpnodepath":"../Node/GPNode",
+     "sanitycheck":{
+     	"going":[
+	     	{"observation":{"speed1":15.340234486702888,"speed2":16.084249000571102,"datediff":475,"going1":1,"going2":-1,"goingdiff":-2,"distance1":1609.344,"distance2":1609.344,"distancediff":0,"weight1":121,"weight2":121,"weightdiff":0,"_id":"56d964ef9c96d60c22fbf32a"},
+	     	 "rel":">"		//speed2 should be faster than speed 1
+	     	},
+	     	{"observation":{"speed1":15.340234486702888,"speed2":16.084249000571102,"datediff":475,"going1":2,"going2":-2,"goingdiff":-4,"distance1":1609.344,"distance2":1609.344,"distancediff":0,"weight1":121,"weight2":121,"weightdiff":0,"_id":"56d964ef9c96d60c22fbf32a"},
+	     	 "rel":">"		//speed2 should be faster than speed 1
+	     	},
+	     	{"observation":{"speed1":15.340234486702888,"speed2":16.084249000571102,"datediff":475,"going1":3,"going2":-3,"goingdiff":-6,"distance1":1609.344,"distance2":1609.344,"distancediff":0,"weight1":121,"weight2":121,"weightdiff":0,"_id":"56d964ef9c96d60c22fbf32a"},
+	     	 "rel":">"		//speed2 should be faster than speed 1
+	     	},
+	     	{"observation":{"speed1":15.340234486702888,"speed2":16.084249000571102,"datediff":475,"going1":-1,"going2":1,"goingdiff":2,"distance1":1609.344,"distance2":1609.344,"distancediff":0,"weight1":121,"weight2":121,"weightdiff":0,"_id":"56d964ef9c96d60c22fbf32a"},
+	     	 "rel":"<"		//speed2 should be slower than speed 1
+	     	},
+	     	{"observation":{"speed1":15.340234486702888,"speed2":16.084249000571102,"datediff":475,"going1":-2,"going2":2,"goingdiff":4,"distance1":1609.344,"distance2":1609.344,"distancediff":0,"weight1":121,"weight2":121,"weightdiff":0,"_id":"56d964ef9c96d60c22fbf32a"},
+	     	 "rel":"<"		//speed2 should be slower than speed 1
+	     	},
+	     	{"observation":{"speed1":15.340234486702888,"speed2":16.084249000571102,"datediff":475,"going1":-3,"going2":3,"goingdiff":6,"distance1":1609.344,"distance2":1609.344,"distancediff":0,"weight1":121,"weight2":121,"weightdiff":0,"_id":"56d964ef9c96d60c22fbf32a"},
+	     	 "rel":"<"		//speed2 should be slower than speed 1
+	     	}
+     	],
+     	"distance":[
+	     	//DISTANCE
+	     	{"observation":{"speed1":15.340234486702888,"speed2":16.084249000571102,"datediff":475,"going1":-1,"going2":-1,"goingdiff":0,"distance1":1750,"distance2":1000,"distancediff":-750,"weight1":121,"weight2":121,"weightdiff":0,"_id":"56d964ef9c96d60c22fbf32a"},
+	     	 "rel":">"		//speed2 should be faster than speed 1
+	     	},
+	     	{"observation":{"speed1":15.340234486702888,"speed2":16.084249000571102,"datediff":475,"going1":-1,"going2":-1,"goingdiff":0,"distance1":1750,"distance2":1500,"distancediff":-250,"weight1":121,"weight2":121,"weightdiff":0,"_id":"56d964ef9c96d60c22fbf32a"},
+	     	 "rel":">"		//speed2 should be faster than speed 1
+	     	},
+	     	{"observation":{"speed1":15.340234486702888,"speed2":16.084249000571102,"datediff":475,"going1":-1,"going2":-1,"goingdiff":0,"distance1":1750,"distance2":2000,"distancediff":250,"weight1":121,"weight2":121,"weightdiff":0,"_id":"56d964ef9c96d60c22fbf32a"},
+	     	 "rel":"<"		//speed2 should be slower than speed 1
+	     	},
+	     	{"observation":{"speed1":15.340234486702888,"speed2":16.084249000571102,"datediff":475,"going1":-1,"going2":-1,"goingdiff":0,"distance1":1750,"distance2":2500,"distancediff":750,"weight1":121,"weight2":121,"weightdiff":0,"_id":"56d964ef9c96d60c22fbf32a"},
+	     	 "rel":"<"		//speed2 should be slower than speed 1
+	     	},
+	     	{"observation":{"speed1":15.340234486702888,"speed2":16.084249000571102,"datediff":475,"going1":-1,"going2":-1,"goingdiff":0,"distance1":1750,"distance2":3000,"distancediff":1250,"weight1":121,"weight2":121,"weightdiff":0,"_id":"56d964ef9c96d60c22fbf32a"},
+	     	 "rel":"<"		//speed2 should be slower than speed 1
+	     	}
+     	],
+     	"weight":[
+	     	//DISTANCE
+	     	{"observation":{"speed1":15.340234486702888,"speed2":16.084249000571102,"datediff":475,"going1":-1,"going2":-1,"goingdiff":0,"distance1":1750,"distance2":1750,"distancediff":0,"weight1":130,"weight2":100,"weightdiff":-30,"_id":"56d964ef9c96d60c22fbf32a"},
+	     	 "rel":">"		//speed2 should be faster than speed 1
+	     	},
+	     	{"observation":{"speed1":15.340234486702888,"speed2":16.084249000571102,"datediff":475,"going1":-1,"going2":-1,"goingdiff":0,"distance1":1750,"distance2":1750,"distancediff":0,"weight1":130,"weight2":120,"weightdiff":-10,"_id":"56d964ef9c96d60c22fbf32a"},
+	     	 "rel":">"		//speed2 should be faster than speed 1
+	     	},
+	     	{"observation":{"speed1":15.340234486702888,"speed2":16.084249000571102,"datediff":475,"going1":-1,"going2":-1,"goingdiff":0,"distance1":1750,"distance2":1750,"distancediff":0,"weight1":130,"weight2":140,"weightdiff":10,"_id":"56d964ef9c96d60c22fbf32a"},
+	     	 "rel":"<"		//speed2 should be slower than speed 1
+	     	},
+	     	{"observation":{"speed1":15.340234486702888,"speed2":16.084249000571102,"datediff":475,"going1":-1,"going2":-1,"goingdiff":0,"distance1":1750,"distance2":1750,"distancediff":0,"weight1":130,"weight2":160,"weightdiff":30,"_id":"56d964ef9c96d60c22fbf32a"},
+	     	 "rel":"<"		//speed2 should be slower than speed 1
+	     	},
+	     	{"observation":{"speed1":15.340234486702888,"speed2":16.084249000571102,"datediff":475,"going1":-1,"going2":-1,"goingdiff":0,"distance1":1750,"distance2":1750,"distancediff":0,"weight1":130,"weight2":180,"weightdiff":50,"_id":"56d964ef9c96d60c22fbf32a"},
+	     	 "rel":"<"		//speed2 should be slower than speed 1
+	     	}
+     	]
+
      }
+
+     
 
 
 });
@@ -112,9 +174,11 @@ function traceCaller(n) {
 
 //end logging config
 
+var gpnode=require(nconf.get("gpnodepath"));
+
 var population;
 var observations;
-var nodeid=0;
+
 
 //stats derived from observations
 var observationsStats={
@@ -140,280 +204,8 @@ var observationsStats={
 	minweight:0.0,
 };
 
-//type:function|variable|constant
-//name: if type==function: +,-,*,/,^,if<=, if type==variablename
-//value: numeric value of this constant
-
-function node(args){
-	this.id=nodeid++;
-	this.type=args.type;//function|variable|constant
-	this.functionname=args.functionname;//if it is a function
-	this.variablename=args.variablename;//if it is a variable
-	this.value=args.value;//value if it is a constant;
-
-	if(typeof this.functionname !== 'undefined'){
-		if(this.functionname=='if<=')
-			this.arity=4;
-		else this.arity=2;
-
-		if(typeof args.arguments !== 'undefined')
-			this.arguments=args.arguments;//new Array(arity);
-		else this.arguments=new Array(this.arity);
-	}
 
 
-	this.copy=function(){
-
-		var copy=new node({type:this.type,functionname:this.functionname, variablename:this.variablename,value:this.value});
-
-		if(this.type=='function'){
-			 copy.arguments=new Array(this.arity);
-
-			for(var i=0;i<this.arity;i++){
-				copy.arguments[i]=this.arguments[i].copy();
-			}
-		}
-
-		return(copy);
-	}
-
-	this.toArray=function(){
-
-		if(this.type=='function'){
-			//var f=[this];
-
-			var args=[this];
-
-			for(var i=0;i<this.arity;i++){
-				var arg=this.arguments[i];
-				args=args.concat(arg.toArray());
-			}
-			return(args);
-
-		}
-		else {
-			var list=[this];
-			return(list);
-		}
-	}
-
-	this.selectIndex=function(isFunction){
-
-		var ar=this.toArray();
-		var selected=false;
-		var selectedIndex;
-
-		while(!selected){
-			var i=Math.floor(Math.random() * ar.length)
-			var sn=ar[i]; //randomly select an element
-
-			if(typeof isFunction == 'undefined'){ //no argument, either fn or terminal is acceptable
-				selected=true;
-				selectedIndex=i;
-			}
-			else if(isFunction){				//only return a function
-				if(sn.type=="function"){
-					selected=true;
-					selectedIndex=i;
-
-				}
-			}
-			else if(sn.type != 'function'){		//only returna terminal
-				selected=true;
-				selectedIndex=i;
-
-			}
-
-			
-
-
-		}
-
-
-
-
-
-
-		return(selectedIndex);
-
-
-	}
-
-	this.getAbsError=function(variablebindings){
-
-		var val=this.eval(variablebindings);
-		if(isNaN(val)){
-			logger.info(this.toStrArr());
-			logger.info(JSON.stringify(variablebindings))
-		}
-
-		var speed1=variablebindings.speed1;
-		var speed2=variablebindings.speed2;
-
-		//var err=variablebindings.speed2-val;
-
-		var observed=((speed2 -speed1)/speed1) * 100000;
-
-		var err=observed - val;
-
-		//logger.info("val: " + val + " err: " + err);
-
-		return(Math.abs(err));
-
-	}
-
-
-
-	
-
-	this.eval=function(variablebindings){ 
-		try{
-			if(this.type=='constant'){
-				return(this.value);
-			}
-			else if(this.type=='variable'){
-				return(variablebindings[this.variablename]);
-			}
-			else if(this.type=='function'){
-				var argVals=new Array(this.arity);
-
-				for(var i=0;i<this.arity;i++){
-					argVals[i]=this.arguments[i].eval(variablebindings);
-				}
-
-				if(this.functionname=='+'){
-					var rval=parseFloat(argVals[0]) + parseFloat(argVals[1]);
-					if(isNaN(rval)){
-						//logger.info(JSON.stringify(this) + " " + rval + " " + JSON.stringify(argVals))
-						return(0)
-					}
-					return(rval);
-				}
-				else if(this.functionname=='-'){
-					var rval=argVals[0] - argVals[1];
-					if(isNaN(rval)){
-						//logger.info(JSON.stringify(this) + JSON.stringify(argVals))
-						return(0)
-					}
-					return(rval);
-					
-				}
-				else if(this.functionname=='*'){
-					var rval=argVals[0] * argVals[1];
-					if(isNaN(rval)){
-						//logger.info(this.toStrArr() + " " + JSON.stringify(argVals))
-						return(0)
-					}
-					return(rval);
-					
-				}
-				else if(this.functionname=='/'){
-					var rval;
-					if(argVals[0]==0)rval=0
-					else rval=argVals[0] / argVals[1];
-					if(isNaN(rval)){
-						//logger.info(JSON.stringify(this) + JSON.stringify(argVals));
-						return(0)
-						
-					}
-					return(rval);
-					
-				}
-				else if(this.functionname=='^'){
-					//logger.info(JSON.stringify(argVals));
-					var rval=Math.pow(argVals[0], Math.floor(argVals[1]));
-					if(!isFinite(rval)){
-						rval=Number.MAX_VALUE;
-					}
-					if(isNaN(rval)){
-						//logger.info(JSON.stringify(this) + JSON.stringify(argVals))
-						return(0)
-					}
-					return(rval);
-					
-				}
-				else if(this.functionname=='if<='){
-					if(argVals[0] <= argVals[1]){
-						rval=argVals[2];
-						if(isNaN(rval)){
-							//logger.info(JSON.stringify(this) + JSON.stringify(argVals))
-							return(0)
-						}
-						return(rval)
-					}
-					else{
-						rval=argVals[2];
-						if(isNaN(rval)){
-							//logger.info(JSON.stringify(this) + JSON.stringify(argVals))
-							return(0)
-						}
-						return(rval);
-					}
-				}
-
-			}
-		}catch(err){
-			logger.error(err);
-			logger.error(JSON.stringify(this));
-		}
-
-	}
-	this.printStr=function(depth,full){
-		var str='' + this.id + " ";
-		for(var i=0;i<depth;i++){
-			str+=' ';
-
-		}
-		if(this.type=='constant'){
-			str+=this.value;
-			str+='\n';
-
-		}
-		else if(this.type=='variable'){
-			str+=this.variablename;
-			str+='\n';
-		}
-		else if(this.type=='function'){
-			str+=this.functionname + '\n';
-			if(full){
-
-				for(var i=0;i<this.arity;i++){
-					var arg=this.arguments[i];
-					str+=arg.printStr(depth + 1,true);
-
-				}
-			}
-
-		}
-		return(str);
-	}
-	this.toStrArr=function(){
-		var str='';// + this.id + " ";
-		
-		if(this.type=='constant'){
-			str+=this.value ;
-			str+=',';
-
-		}
-		else if(this.type=='variable'){
-			str+='"' + this.variablename + '"';
-			str+=',';
-		}
-		else if(this.type=='function'){
-			str+='"'+this.functionname + '",';
-			if(true){
-
-				for(var i=0;i<this.arity;i++){
-					var arg=this.arguments[i];
-					str+=arg.toStrArr();// + ',';
-
-				}
-			}
-
-		}
-		return(str);
-	}
-}
 
 function generateNode(depth,strategy){
 
@@ -433,14 +225,14 @@ function generateNode(depth,strategy){
 
 				var rc=cSet[Math.floor(Math.random() * cSet.length)];
 
-				var newNode = new node({'type':'constant','value': rc});
+				var newNode = new gpnode({'type':'constant','value': rc});
 				return(newNode);
 			}
 			else{
 				//generate a variable
 				var va=nconf.get('variables');
 				var rv=va[Math.floor(Math.random() * va.length)];
-				var newNode=new node({'type':'variable','variablename': rv});
+				var newNode=new gpnode({'type':'variable','variablename': rv});
 				return(newNode);
 			}
 
@@ -453,13 +245,13 @@ function generateNode(depth,strategy){
 			if(r>((c+f)/(c+f+v))){//generate a variable
 				var va=nconf.get('variables');
 				var rv=va[Math.floor(Math.random() * va.length)];
-				var newNode=new node({'type':'variable','variablename': rv});
+				var newNode=new gpnode({'type':'variable','variablename': rv});
 				return(newNode);
 			}
 			else if(r>(c/(c+f+v))){//generate a constant
 				var rc=cSet[Math.floor(Math.random() * cSet.length)];
 
-				var newNode = new node({'type':'constant','value': rc});
+				var newNode = new gpnode({'type':'constant','value': rc});
 				return(newNode);
 			}
 			else{				//generate a function
@@ -492,65 +284,30 @@ function generateFunctionNode(depth, strategy){
 	var fa=nconf.get('functionSet');
 	var rf=fa[Math.floor(Math.random() * fa.length)];
 
-	var newNode=new node({'type':'function','functionname':rf});
+	var newNode=new gpnode({'type':'function','functionname':rf});
 
 	var arity=newNode.arity;
 
 	for(var i=0;i<arity;i++){
-		newNode.arguments[i]=generateNode(depth -1,strategy);
+		if((newNode.functionname=="if<=") && (i==0)){	//always choose a variable as first argument for if<=
+			var va=nconf.get('variables');
+			var rv=va[Math.floor(Math.random() * va.length)];
+			var varNode=new gpnode({'type':'variable','variablename': rv});
+			newNode.arguments[i]=varNode;
+		}
+		else{
+			newNode.arguments[i]=generateNode(depth -1,strategy);
+		}
 	}
+		
 
 	return(newNode);
 
 
 }
 
-//returns a node structure by parsing an array of strings
-
-var parsePos=0;
-function parseNode(ar){
-	var newNode;
-	var token=ar[parsePos];
-	if(typeof token !== 'undefined'){
-		parsePos++;
-
-		if(typeof token=='number'){
-			newNode=new node({'type':'constant','value':token}); //constant
-		}
-		else if(inArray(token,nconf.get('variables'))){			//variable
-			newNode=new node({'type':'variable','variablename':token});
-		}
-		else if(inArray(token,nconf.get('functionSet'))) {
-
-				var arity=2;
-
-			if(token=='if<='){
-				arity=4;
-			}
-			var newNode=new node({'type':'function','functionname':token});
-
-			for(var i=0;i<arity;i++){
-				newNode.arguments[i]=parseNode(ar);
-			}
-		
 
 
-		}
-
-		return(newNode);
-	}
-
-
-}
-
-function inArray(token,array){
-
-	for(var i=0;i<array.length;i++){
-		if(token == array[i])return(true);
-	}
-
-	return(false);
-}
 
 function crossover(node1,node2,index1,index2){
 	//logger.info("parent1: \n" + node1.printStr(0,true));
@@ -666,6 +423,7 @@ function subtreeMutate(node1,index,depth){
 }
 //Ramped half and half
 function generatePopulation(size){
+	var count=0;
 	var mind=nconf.get('mind');
 	var maxd=nconf.get('maxd');
 	var diff=maxd-mind;
@@ -674,13 +432,8 @@ function generatePopulation(size){
 	var depth=mind;
 	var strategy='full';
 	population = new Array(size)
-	for(var i=0;i<size;i++){
-		incrCounter++;
-		if(incrCounter>incrEvery){
-			incrCounter=0;
-			depth++;
-			//logger.info(i + ' depth: ' + depth);
-		};
+	while(count < size){
+		
 		var node;
 		if(strategy=='grow'){
 			node=generateFunctionNode(depth,'grow'); //prevent nodes which are just one terminal -first term must be a function
@@ -698,12 +451,271 @@ function generatePopulation(size){
 			}
 		}
 		//logger.info(strategy + " " + depth + ": " + obj.rule.toStrArr());
-		population[i]=obj;
-		if(strategy=='full')
-			strategy='grow'
-		else strategy='full'
+		//var pass=sanityCheck(obj);
+		//logger.info("pass: " + pass);
+		//if(pass){
+		if(true){
+			incrCounter++;
+			if(incrCounter>incrEvery){
+				incrCounter=0;
+				depth++;
+				//logger.info(i + ' depth: ' + depth);
+			};
+			//logger.info(JSON.stringify(obj));
+			population[count++]=obj;
+			//console.log(count + " (" + depth + ")");
+			if(strategy=='full')
+				strategy='grow';
+			else strategy='full';
+		}
+		
+		
+
+		
 
 	}
+	//logger.info(JSON.stringify(population));
+
+}
+
+function sanityCheck(pm){
+	var pass=true;
+	var rule=pm.rule;
+	if(typeof rule.stats == 'undefined'){
+		rule.stats={
+			cumulativeError:0,
+			nobservations:0,
+			fitness:Number.MAX_VALUE
+		}
+	}
+	else{
+		rule.stats.cumulativeError=0;
+		rule.stats.nobservations=0;
+		rule.stats.fitness=Number.MAX_VALUE
+	}
+
+	//Once through, to get min and max values of the function
+	var min=0.0;
+	var max=0.0;
+	for(var i=0;i<observations.length;i++){
+		var obs=observations[i];
+		if(obs.speed1!== null && obs.speed2 !== null){
+	
+		//for(var i=0;i<1000;i++){
+			obs.val=rule.eval(obs);
+			//console.log(JSON.stringify(obs));
+			if(obs.val > max)max=obs.val;
+			if(obs.val < min)min=obs.val;
+		}
+
+	}
+	//logger.info('rule min: ' + min);
+	//logger.info('rule max: ' + max);
+
+	rule.minfofx=min;
+	rule.maxfofx=max;
+
+	//logger.info(JSON.stringify(rule));
+
+	//which sanity Checks to perform?
+
+	var distanceSt=false;
+	var goingSt=false;
+	var weightSt=false;
+
+	var strArr= new Array();
+	rule.toArrStr(strArr);
+	//logger.info('stArr: ' + strArr);
+
+	for (var i=0;i<strArr.length;i++){
+		var s=strArr[i];
+		//logger.info("s: " + s);
+		if (s.indexOf("distance")!=-1){
+			distanceSt=true;
+			break;
+		}
+	}
+
+	for (var i=0;i<strArr.length;i++){
+		var s=strArr[i];
+		//logger.info("s: " + s);
+		if (s.indexOf("going")!=-1){
+			goingSt=true;
+			break;
+		}
+	}
+
+	for (var i=0;i<strArr.length;i++){
+		var s=strArr[i];
+		//logger.info("s: " + s);
+		if (s.indexOf("weight")!=-1){
+			weightSt=true;
+			break;
+		}
+	}
+
+	//logger.info(strArr + " " + distanceSt);
+
+
+	//if necessary, iterate over distance Sanitycheck observations
+
+	var sanityChecks=nconf.get('sanitycheck').distance;
+
+	//logger.info("Rule: " + rule.toStrArr());
+	if(distanceSt){
+		for(var i=0;i<sanityChecks.length;i++){
+			//logger.info("sanity check number: " + i);
+			var sanityCheck=sanityChecks[i];
+			var scObservation=sanityCheck.observation;
+			var scRel=sanityCheck.rel;
+			if(scObservation.speed1!== null && scObservation.speed2 !== null){
+				//logger.info("EVAL: rule" + JSON.stringify(rule) );
+				//logger.info("EVAL: obs" + JSON.stringify(scObservation));
+				scObservation.val=rule.eval(scObservation);
+				//logger.info("val = " + scObservation.val);
+				scObservation.val=rule.eval(scObservation);
+				scObservation.predictedProportion=(scObservation.val -rule.minfofx)/(rule.maxfofx -rule.minfofx);
+				scObservation.predictedChange=observationsStats.minSpeedDif.dif +(scObservation.predictedProportion *(observationsStats.maxSpeedDif.dif - observationsStats.minSpeedDif.dif));
+				//logger.info("rel: " + scRel + " predictedChange: " + scObservation.predictedChange);
+				//scObservation.actualChange=((scObservation.speed2 - scObservation.speed1)/scObservation.speed1);
+				//obs.absError=Math.abs(obs.actualChange - obs.predictedChange);
+				//console.log(JSON.stringify(obs));
+				//pm.stats.cumulativeError=pm.stats.cumulativeError + obs.absError;
+				//pm.stats.nobservations=pm.stats.nobservations+1;
+				//logger.info(JSON.stringify(scObservation));
+				
+				if(scRel=='>'){
+					if(scObservation.predictedChange >= 0){
+						//pass=true;
+					}
+					else{
+						pass=false;
+						break;
+						//return(pass);
+					}
+
+				}
+				else if(scRel=='<'){
+					if(scObservation.predictedChange <=0){
+						//pass=true;
+					}
+					else{
+						pass=false;
+						break;
+					}
+
+				}
+				
+			}
+			//process.exit(1);
+
+		}
+	}
+	sanityChecks=nconf.get('sanitycheck').going;
+	if(pass && goingSt){
+		for(var i=0;i<sanityChecks.length;i++){
+			//logger.info("sanity check number: " + i);
+			var sanityCheck=sanityChecks[i];
+			var scObservation=sanityCheck.observation;
+			var scRel=sanityCheck.rel;
+			if(scObservation.speed1!== null && scObservation.speed2 !== null){
+				//logger.info("EVAL: rule" + JSON.stringify(rule) );
+				//logger.info("EVAL: obs" + JSON.stringify(scObservation));
+				scObservation.val=rule.eval(scObservation);
+				//logger.info("val = " + scObservation.val);
+				scObservation.val=rule.eval(scObservation);
+				scObservation.predictedProportion=(scObservation.val -rule.minfofx)/(rule.maxfofx -rule.minfofx);
+				scObservation.predictedChange=observationsStats.minSpeedDif.dif +(scObservation.predictedProportion *(observationsStats.maxSpeedDif.dif - observationsStats.minSpeedDif.dif));
+				//logger.info("rel: " + scRel + " predictedChange: " + scObservation.predictedChange);
+				//scObservation.actualChange=((scObservation.speed2 - scObservation.speed1)/scObservation.speed1);
+				//obs.absError=Math.abs(obs.actualChange - obs.predictedChange);
+				//console.log(JSON.stringify(obs));
+				//pm.stats.cumulativeError=pm.stats.cumulativeError + obs.absError;
+				//pm.stats.nobservations=pm.stats.nobservations+1;
+				//logger.info(JSON.stringify(scObservation));
+				
+				if(scRel=='>'){
+					if(scObservation.predictedChange >= 0){
+						//pass=true;
+					}
+					else{
+						pass=false;
+						break;
+						//return(pass);
+					}
+
+				}
+				else if(scRel=='<'){
+					if(scObservation.predictedChange <=0){
+						//pass=true;
+					}
+					else{
+						pass=false;
+						break;
+					}
+
+				}
+				
+			}
+			//process.exit(1);
+
+		}
+	}
+	sanityChecks=nconf.get('sanitycheck').weight;
+	if(pass && weightSt){
+		for(var i=0;i<sanityChecks.length;i++){
+			//logger.info("sanity check number: " + i);
+			var sanityCheck=sanityChecks[i];
+			var scObservation=sanityCheck.observation;
+			var scRel=sanityCheck.rel;
+			if(scObservation.weight1!== null && scObservation.weight2 !== null){
+				//logger.info("EVAL: rule" + JSON.stringify(rule) );
+				//logger.info("EVAL: obs" + JSON.stringify(scObservation));
+				scObservation.val=rule.eval(scObservation);
+				//logger.info("val = " + scObservation.val);
+				scObservation.val=rule.eval(scObservation);
+				scObservation.predictedProportion=(scObservation.val -rule.minfofx)/(rule.maxfofx -rule.minfofx);
+				scObservation.predictedChange=observationsStats.minSpeedDif.dif +(scObservation.predictedProportion *(observationsStats.maxSpeedDif.dif - observationsStats.minSpeedDif.dif));
+				//logger.info("rel: " + scRel + " predictedChange: " + scObservation.predictedChange);
+				//scObservation.actualChange=((scObservation.speed2 - scObservation.speed1)/scObservation.speed1);
+				//obs.absError=Math.abs(obs.actualChange - obs.predictedChange);
+				//console.log(JSON.stringify(obs));
+				//pm.stats.cumulativeError=pm.stats.cumulativeError + obs.absError;
+				//pm.stats.nobservations=pm.stats.nobservations+1;
+				//logger.info(JSON.stringify(scObservation));
+				
+				if(scRel=='>'){
+					if(scObservation.predictedChange >= 0){
+						//pass=true;
+					}
+					else{
+						pass=false;
+						break;
+						//return(pass);
+					}
+
+				}
+				else if(scRel=='<'){
+					if(scObservation.predictedChange <=0){
+						//pass=true;
+					}
+					else{
+						pass=false;
+						break;
+					}
+
+				}
+				
+			}
+			//process.exit(1);
+
+		}
+	}
+
+	//if(pass)logger.info(rule.toStrArr() + " distanceSt: " + distanceSt +  " goingSt: " + goingSt +  " weightSt: " + weightSt +  " pass: " + pass);
+
+	return(pass);
+
 
 }
 
@@ -720,12 +732,14 @@ function evaluatePopulation(all){
 	
 	//for(var i=0;i<1;i++){
 			//console.log(i + " ");
+			process.stdout.write(".");
 			var populationMember=population[i];
 			if(typeof populationMember == 'undefined'){
 				logger.info("i: " + i + " " + JSON.stringify(population));
 			}
 			evaluatePopulationMember(populationMember);
 	}
+	console.log("");
 	//logger.info(JSON.stringify(population));
 	
 
@@ -746,6 +760,8 @@ function evaluatePopulationMember(pm){
 		rule.stats.nobservations=0;
 		rule.stats.fitness=Number.MAX_VALUE
 	}
+
+	//Once through, to get min and max values of the function
 	var min=0.0;
 	var max=0.0;
 	for(var i=0;i<observations.length;i++){
@@ -766,6 +782,9 @@ function evaluatePopulationMember(pm){
 
 	rule.minfofx=min;
 	rule.maxfofx=max;
+
+	//Sanity check here, set fitness to zero if fail, and don't test against observations
+
 	for(var i=0;i<observations.length;i++){
 	//	for(var i=0;i<10;i++){
 		var obs=observations[i];
@@ -773,7 +792,7 @@ function evaluatePopulationMember(pm){
 			
 			obs.predictedProportion=(obs.val -rule.minfofx)/(rule.maxfofx -rule.minfofx);
 			obs.predictedChange=observationsStats.minSpeedDif.dif +(obs.predictedProportion *(observationsStats.maxSpeedDif.dif - observationsStats.minSpeedDif.dif));
-			obs.actualChange=((obs.speed1 - obs.speed2)/obs.speed1);
+			obs.actualChange=((obs.speed2 - obs.speed1)/obs.speed1);
 			obs.absError=Math.abs(obs.actualChange - obs.predictedChange);
 			//console.log(JSON.stringify(obs));
 			pm.stats.cumulativeError=pm.stats.cumulativeError + obs.absError;
@@ -799,55 +818,7 @@ function evaluatePopulationMember(pm){
 
 
 }
-/*
-function evaluatePopulationMemberOld(pm){
-	var rule=pm.rule;
-	if(typeof rule.stats == 'undefined'){
-		rule.stats={
-			cumulativeError:0,
-			nobservations:0,
-			fitness:Number.MAX_VALUE
-		}
-	}
-	else{
-		rule.stats.cumulativeError=0;
-		rule.stats.nobservations=0;
-		rule.stats.fitness=Number.MAX_VALUE
-	}
 
-	for(var i=0;i<observations.length;i++){
-	//for(var i=0;i<10;i++){
-		var obs=observations[i];
-
-		if(obs.speed1!== null && obs.speed2 !== null){
-
-			var err=rule.getAbsError(obs);
-			//logger.info("err: " + err);
-			if(err == Infinity){
-				//logger.info("Infinity obs: " + JSON.stringify(obs));
-				//logger.info("Rule: " + rule.toStrArr());
-				//break;
-			}
-			pm.stats.cumulativeError=pm.stats.cumulativeError + err;
-			pm.stats.nobservations=pm.stats.nobservations+1;
-			
-			//logger.info("stats: " + JSON.stringify(pm.stats));
-		}
-	}
-
-	pm.stats.fitness=pm.stats.cumulativeError/pm.stats.nobservations;
-	//logger.info("Fitness: " + pm.stats.fitness);
-	if(pm.stats.fitness==Infinity){
-		pm.stats.fitness=Number.MAX_VALUE;
-	}
-	if(pm.stats.fitness==null){
-		//logger.info("FITNESS NULL");
-		pm.stats.fitness=Number.MAX_VALUE;
-	}
-	//logger.info("stats: " + JSON.stringify(pm.stats));
-
-}
-*/
 
 function sortPopulation(){
 	population.sort(function(a,b){
@@ -1114,39 +1085,7 @@ function getObservationsStats(){
 
 }
 
-/*
-function getRuleMaxAndMin(rule){
-	for(var i1=0; i1<permutations.going.length;i1++){
-		for(var i2=0;i2<permutations.distance.length;i2++){
-			for(var i3=0;i3<permutations.weight.length;i3++){
-				for(var j1=0; j1<permutations.going.length;j1++){
-					for(var j2=0;j2<permutations.distance.length;j2++){
-						for(var j3=0;j3<permutations.weight.length;j3++){
 
-								var going1=permutations.going[i1];
-								var distance1=permutations.distance[i2];
-								var weight1=permutations.weight[i3];
-
-								var going2=permutations.going[j1];
-								var distance2=permutations.distance[j2];
-								var weight2=permutations.weight[j3];
-								var observation={
-									
-								}
-
-				
-						}
-					}
-				}
-
-
-			}
-		}
-	}
-
-
-}
-*/
 
 
 
@@ -1197,363 +1136,40 @@ observations=[obs1,obs2];
 
 */
 
+//logger.info("go get observations");
 observations= JSON.parse(fs.readFileSync(nconf.get('datafileurl'), 'utf8'));
-//logger.info("Observations: " + observations.length);
 getObservationsStats();
-//console.log(JSON.stringify(observationsStats));
+logger.info("observationStats: " +JSON.stringify(observationsStats));
+/*
+var rule=["*",-1.0,"goingdiff"];
+var testNode=new gpnode().parseNode(rule,nconf.get('variables'),nconf.get('functionSet'));
+var populationMember={
+			rule:testNode,
+			stats:{
+				cumulativeError:0,
+				nobservations:0,
+				fitness:Number.MAX_VALUE
+			}
+		}
+logger.info(JSON.stringify(populationMember));
+var pass=sanityCheck(populationMember);
+logger.info("PASS: " + pass);
+*/
 
 generatePopulation(nconf.get('populationsize'));
-//generatePopulation(10);
+//generatePopulation(1);
 
 
 evaluatePopulation(true);//evaluate all
 
 sortPopulation();
-
 logger.info(population[0].rule.toStrArr() + " " + JSON.stringify(population[0].stats));
 
 evolve();
 
 
 
-//for(var i=0;i<population.length;i++)
-//	logger.info(JSON.stringify(population[i].stats));
 
-/*
-console.log(population[0].rule.toStrArr() + " " + JSON.stringify(population[0].stats));
 
-var parent1=tournament();
-logger.info("parent1:\n " + parent1.rule.printStr(0,true));
-
-var parent2=tournament();
-logger.info("parent2:\n " + parent2.rule.printStr(0,true));
-
-var index1=parent1.rule.selectIndex();
-var index2=parent2.rule.selectIndex();
-logger.info('index1: ' + index1 + " index2: " + index2);
-
-var offspring=crossover(parent1.rule,parent2.rule,index1,index2);
-
-logger.info("offspring:\n " + offspring.printStr(0,true));
-
-*/
-
-
-
-
-/*
-var tournamentWinner=tournament();
-console.log("Tournament Winner: " + tournamentWinner.rule.toStrArr());
-var crossoverMutateIndex=tournamentWinner.rule.selectIndex();
-console.log("crossoverMutateIndex: " + crossoverMutateIndex);
-var cmDepth=nconf.get('mind') +Math.floor(Math.random() * (nconf.get('maxd')-nconf.get('mind')));
-console.log("cmdepth: " + cmDepth);
-var mutated=subtreeMutate(tournamentWinner.rule,crossoverMutateIndex,cmDepth);
-console.log("Tournament Winner mutated: " + mutated.toStrArr());
-var mutatedArray=mutated.toArray();
-console.log(mutatedArray);
-for(var i=0;i<mutatedArray.length;i++){
-
-	var nodeToMutate=mutatedArray[i];
-	var rnd=Math.random();
-	//console.log("rnd: "+ rnd)
-	if(rnd > nconf.get('pointmutationrate')){
-		//logger.info(i + 'point mutate it');
-		pointMutate(nodeToMutate)
-	}
-	else{
-		//logger.info(i + 'do not point mutate it');
-	}
-}
-
-console.log("Tournament Winner point mutated: " + mutated.toStrArr());*/
-
-
-
-
-
-
-
-/*
-//TEST HERE
-var  rule1=["*","+","/","goingdiff","weightdiff","^",-4.7995,4.3063,"if<=","^",-6.0770, "weight1","*","weight2",-5.7391,"/","distancediff","speed1","+","weight2",4.1091];
-var n1=parseNode(rule1);
-
-var obs1={"speed1":14.906854390515006,"speed2":16.172686162194754,"datediff":21,"going1":1,"going2":-1,"goingdiff":-2,"distance1":1609.344,"distance2":1609.344,"distancediff":0,"weight1":133,"weight2":133,"weightdiff":0,"_id":"5682b5dadaeeac24032e5986"}
-
-logger.info("evals to: " + n1.eval(obs1));
-*/
-
-
-
-
-
-
-//logger.info("evals to: " + n1.eval(obs2));
-/*var thisNode = generateNode(3,'full');
-
-var copy=thisNode.copy();
-
-var ar=copy.toArray();
-
-var selectedIndex1=copy.selectIndex(true);
-var selectedIndex2=copy.selectIndex(false);
-*/
-
-
-
-//logger.info("node: " + JSON.stringify(thisNode));
-/*logger.info("node: \n" + thisNode.printStr(0));
-
-logger.info("copy: \n" + copy.printStr(0));
-
-logger.info("copy toArray(): " +  ar);
-
-logger.info("selectedIndex1 " + selectedIndex1);
-
-logger.info("selected function:\n " + ar[selectedIndex1].printStr(0));
-
-logger.info("selectedIndex2 " + selectedIndex2);
-logger.info("selected terminal:\n " + ar[selectedIndex2].printStr(0));
-*/
-
-/*var parent1=generateNode(3,'full');
-
-
-
-var parent2=generateNode(3,'full');
-
-
-
-var index1=parent1.selectIndex(true); //function
-
-var index2=parent2.selectIndex(false);//terminal
-
-var offspring=crossover(parent1,parent2,index1,index2);
-
-logger.info("offspring:\n " + offspring.printStr(0,true));*/
-
-
-
-
-
-
-/*
-var rule1=[
-	'if<=',
-		'goingdiff',
-		0,
-		'*',
-			'speed1',
-			2.0,
-		'/',
-			'speed1',
-			3.0
-
-]
-*/
-
-
-
-//logger.info("error node1: " + node1.getAbsError(obs1));
-
-
-/* parsePos=0;
-//var parent1=parseNode(["if<=",-7.0755,"distancedif","speed","distancedif"]);
-
-var parent1=parseNode(rule1);
-
-logger.info("parent1:\n" + parent1.printStr(0,true));
-
-parsePos=0;
-
-var parent2=parseNode(rule2);
-
-logger.info("parent2:\n" + parent2.printStr(0,true));
-
-//var offspring=crossover(parent1,parent2,10,0);
-//var offspring=pointMutate(parent1.arguments[0].arguments[0].arguments[1]);
-
-var mutated=subtreeMutate(parent1,1,4);
-
-logger.info("mutated:\n" + mutated.printStr(0,true));
-
-*/
-
-/*parent1 index 17
-if<=
- -
-  if<=
-   -7.0755
-   distancedif
-   speed
-   distancedif
-  -
-   -5.5980
-   weightdif
- ^
-  /
-   goingdif
-   distancedif
-  ^
-   -2.2314
-   2.1337
- ^
-  /
-   weight
-   0.8634
-  ^
-   weightdif
-   9.4572
- +
-  ^
-   weight
-   8.5429
-  -
-   distancedif
-   8.8923
-
-
-parent2: index 13
-+
- -
-  +
-   distancedif
-   distance
-  -
-   speed
-   9.4747
- -
-  if<=
-   0.8850
-   -6.2010
-   -0.1258
-   distance
-  /
-   4.0559
-   distancedif
-
-
-
-*/
-
-/*
-var pln13=new node({'type':'variable','variablename':'weightdif'})
-var pln12=new node({'type':'constant','value':-5.5980});
-var pln7=new node({'type':'function','functionname':'-',arguments:[p1n12,p1n13]});
-
-var pln11=new node({'type':'variable','variablename':'distancedif'})
-var pln10=new node({'type':'variable','variablename':'speed'});
-var pln9=new node({'type':'variable','variablename':'distancedif'});
-var pln8=new node({'type':'constant','value':-7.0755});
-
-var p1n6=new node({'type':'function','functionname': 'if<=','arguments':[p1n8,p1n9,p1n10,p1n11]});
-
-var p1n2=new node({'type':'function','functionname':'-',arguments:[p1n6,p1n7]});
-
-var p1n1=new node({'type':'function','functionname': 'if<=','arguments':[p1n2,p1n3,p1n4,p1n5]})
-
-
-
-
-
-var p1n1=new node({'type':'constant','value':8.8923});
-var p1n2=new node({'type':'variable','variablename':'distancedif'});
-var p1n3=new node({'type':'function','functionname': '-','arguments':[p1n2,p1n1]}); //- distancedif 8.8923
-
-var p1n4=new node({'type':'constant','value':8.5429});
-var p1n5=new node({'type':'variable','variablename':'weight'});
-var p1n6=new node({'type':'function','functionname': '^','arguments':[p1n5,p1n4]}); //^ weight 8.8923 8.5429
-
-var p1n7=new node({'type':'function','functionname': '+','arguments':[p1n6,p1n3]});
-
-var p1n8=new node({'type':'constant','value':0.8634});
-var p1n9=new node({'type':'variable','variablename':'weight'});
-var p1n10=new node({'type':'function','functionname': '/','arguments':[p1n9,p1n8]});// /weight 0.8634
-
-var p1n11=new node({'type':'constant','value':9.4572});
-var p1n12=new node({'type':'variable','variablename':'weightdif'});
-var p1n13=new node({'type':'function','functionname': '^','arguments':[p1n12,p1n11]});//^ weightdif 9.4572
-
-var p1n14=new node({'type':'function','functionname': '^','arguments':[p1n13,p1n10]});
-
-*/
-
-
-/*
-var node1data={'type':'constant','value':1.056};
-
-var node1=new node(node1data);
-
-logger.info("eval node1: " + node1.eval({}));
-
-var node2data={'type':'variable','variablename':'x'};
-
-var node2=new node(node2data);
-
-logger.info("eval node2: " + node2.eval({'x':2.17}));
-
-var node3data={'type':'function','functionname': '+','arguments':[node1,node2]};
-
-var node3=new node(node3data);
-
-logger.info("eval node3: " + node3.eval({'x':2.17}));
-
-logger.info("eval node3: " + node3.eval({'x':4.27}));
-
-var node4data={'type':'function','functionname': '-','arguments':[node1,node2]};
-
-var node4=new node(node4data);
-
-logger.info("eval node4: " + node4.eval({'x':2.17}));
-
-logger.info("eval node4: " + node4.eval({'x':4.27}));
-
-var node5data={'type':'function','functionname': '*','arguments':[node1,node2]};
-
-var node5=new node(node5data);
-
-logger.info("eval node5: " + node5.eval({'x':2.17}));
-
-logger.info("eval node5: " + node5.eval({'x':4.27}));
-
-var node6data={'type':'function','functionname': '/','arguments':[node1,node2]};
-
-var node6=new node(node6data);
-
-logger.info("eval node6: " + node6.eval({'x':2.17}));
-
-logger.info("eval node6: " + node6.eval({'x':4.27}));
-
-var node7data={'type':'function','functionname': '^','arguments':[node1,node2]};
-
-var node7=new node(node7data);
-
-logger.info("eval node7: " + node7.eval({'x':2.17}));
-
-logger.info("eval node7: " + node6.eval({'x':4.27}));
-
-
-var node8data={'type':'constant','value':1.0};
-
-var node8=new node(node8data);
-
-
-var node9data={'type':'variable','variablename':'z'};
-
-var node9=new node(node9data);
-
-
-
-//if z <= 1 return node1 (1.056) else return node2 (value of x)
-var node10data={'type':'function', 'functionname':'if<=','arguments':[node9,node8,node1,node2]}
-
-var node10=new node(node10data);
-
-logger.info("eval node10: " + node10.eval({'x':2.0,'z':4.0}));
-
-
-
-*/
 
 
